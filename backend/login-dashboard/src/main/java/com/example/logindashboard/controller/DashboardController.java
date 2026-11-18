@@ -14,7 +14,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dashboard")
-@CrossOrigin(origins = "http://localhost:5174", allowCredentials = "true")
+@CrossOrigin(
+	    origins = {
+	        "http://localhost:5173",
+	        "http://localhost:5174",
+	        "https://lumina-login-dashboard.vercel.app"
+	    },
+	    allowCredentials = "true"
+	)
 public class DashboardController {
 
     private final AuthService authService;
