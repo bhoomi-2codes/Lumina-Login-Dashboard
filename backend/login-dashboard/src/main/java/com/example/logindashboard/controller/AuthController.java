@@ -17,7 +17,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5174", allowCredentials = "true")
+@CrossOrigin(
+    origins = {
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://lumina-login-dashboard.vercel.app"
+    },
+    allowCredentials = "true"
+)
 public class AuthController {
 
     private final AuthService authService;
@@ -26,73 +33,73 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // Registration request
-    public record RegisterRequest(
-        @NotBlank String name,
-        @NotBlank @Email String email,
-        @NotBlank @Size(min = 6) String password
-    ) {}
-
-    // Login request
-    public record LoginRequest(
-        @NotBlank @Email String email,
-        @NotBlank String password
-    ) {}
-
-    // Register API
     @PostMapping("/register")
     public ResponseEntity<?> register(
             @Valid @RequestBody RegisterRequest request) {
 
-        String result = authService.register(
-            request.name().trim(),
-            request.email().trim().toLowerCase(),
-            request.password()
-        );
 
-        if (result.equals("Email already registered")) {
-            return ResponseEntity.badRequest().body(result);
+        String result = authService.register(
+        	    request.name(),
+        	    request.email(),
+        	    request.password()
+        	);
+
+        if ("Email already registered".equals(result)) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", result));
         }
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(
+                Map.of("message", "Registration successful")
+        );
     }
 
-    // Login API
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @Valid @RequestBody LoginRequest request,
             HttpSession session) {
 
-        String email = request.email().trim().toLowerCase();
-
         User user = authService.login(
-            email,
-            request.password()
+                request.email(),
+                request.password()
         );
 
         if (user == null) {
             return ResponseEntity.status(401)
-                .body("Invalid email or password");
+                    .body(Map.of(
+                        "message", "Invalid email or password"
+                    ));
         }
 
-        session.setAttribute("userEmail", email);
+        session.setAttribute("userEmail", user.getEmail());
 
         return ResponseEntity.ok(
-            Map.of(
-                "name", user.getName(),
-                "email", user.getEmail()
-            )
+                Map.of(
+                    "message", "Login successful",
+                    "name", user.getName(),
+                    "email", user.getEmail()
+                )
         );
     }
 
-    // Logout API
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
 
         session.invalidate();
 
         return ResponseEntity.ok(
-            "Logged out successfully"
+                Map.of("message", "Logout successful")
         );
     }
+
+    public record RegisterRequest(
+            @NotBlank String name,
+            @NotBlank @Email String email,
+            @NotBlank @Size(min = 6) String password
+    ) {}
+
+    public record LoginRequest(
+            @NotBlank @Email String email,
+            @NotBlank String password
+    ) {}
 }
