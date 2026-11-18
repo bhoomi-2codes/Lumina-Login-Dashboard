@@ -6,6 +6,15 @@ Lumina is a web-based login and dashboard application developed using React.js a
 
 The application provides user registration, login authentication, session management, and a personalised dashboard with a clean and minimal interface. It also includes light and dark theme options.
 
+## Live Demo
+
+Frontend: https://lumina-login-dashboard.vercel.app/
+
+Backend: https://lumina-login-dashboard.onrender.com
+
+The frontend is deployed on Vercel and the backend
+is deployed on Render.
+
 ## 2. Features
 
 - User registration with form validation
@@ -110,7 +119,7 @@ npm run dev
 
 The current development setup uses:
 
-`http://localhost:5174`
+`http://localhost:5173`
 
 ### Step 3: Use the Application
 
@@ -122,11 +131,12 @@ The current development setup uses:
 
 ## 8. Current Implementation Notes
 
-- User accounts are currently stored in an in-memory data structure.
+- User accounts are stored in an in-memory data structure.
 - Passwords are hashed using BCrypt before storage.
-- User accounts are cleared when the backend application restarts.
-- The application is configured for local development and has not been deployed.
-- Dashboard statistics are currently demonstration values.
+- User accounts are cleared when the backend restarts.
+- Dashboard statistics are demonstration values.
+- Frontend is deployed on Vercel.
+- Backend is deployed on Render.
 
 ## 9. Author
 
